@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import Action, { IAction } from '../models/Action';
 import User from '../models/User';
+import mongoose from 'mongoose';
 
 // Calculate points based on action type
 const calculatePoints = (actionType: string): number => {
@@ -79,6 +80,22 @@ export const createAction = async (req: AuthRequest, res: Response): Promise<voi
     });
   } catch (error: any) {
     console.error('Create action error:', error);
+    function isValidatorOrCastError(x: unknown): x is mongoose.Error.ValidatorError | mongoose.Error.CastError {
+      return typeof x === 'object' && x !== null && 'message' in x;
+    }
+
+    if (error.name === "ValidationError") {
+      const raw = (error as any).errors ?? {};
+      const message = Object.values(raw)
+        .filter(isValidatorOrCastError)
+        .map(e => e.message)
+        .join(', ');
+       res.status(400).json({
+        success: false,
+        message,
+      });
+    }
+    
     res.status(500).json({
       message: 'Error logging action',
       error: error.message,

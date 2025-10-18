@@ -125,18 +125,28 @@ export interface Recommendation {
 //   userId: IUser;
 // }
 
-// export interface IPagination {
-//   currentPage: number;
-//   totalPages: number;
-//   totalActions: number;
-//   hasMore: boolean;
-// }
+export interface IPagination {
+  currentPage: number;
+  totalPages: number;
+  totalActions: number;
+  hasMore?: boolean;
+}
+export interface TipPagination {
+  currentPage: number;
+  totalPages: number;
+  totalTips: number;
+ 
+}
+export interface GetAllTipsSuccess {
+  tips: Tip[];
+  pagination: TipPagination;
+}
 
-// // Successful response
-// export interface IGetAllActionsSuccess {
-//   actions: IAction[];
-//   pagination: IPagination;
-// }
+// Successful response
+export interface IGetAllActionsSuccess {
+  actions: Action[];
+  pagination: IPagination;
+}
 
 // // Error response
 // export interface ErrorResponse {

@@ -2,33 +2,44 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import Button from '../components/common/Button';
+import Toast from '../components/common/Toast';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [status, setStatus] = useState<"success" | "error" | "info" | "warning" >("info");
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [toast, setToast] = useState("")
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setIsVisible(!isVisible);
   }
-
+  const onClose = () => {
+    setToast("");
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    // setError('');
+    setToast("")
     setLoading(true);
 
     try {
       await login(email, password);
-      navigate('/dashboard');
+      setStatus("success");
+      setToast("Login successful!");
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 3000);
     } catch (err: unknown) {
       if (err instanceof Error) {
-        setError(err.message);
+        setStatus("error");
+        setToast(err.message);
       } else {
-        setError('Login failed. Please try again.');
+        setStatus("error");
+        setToast('Login failed. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -50,10 +61,8 @@ const Login: React.FC = () => {
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
+          {toast && (
+            <Toast message={toast} onClose={onClose} type={status} />
           )}
           <div className="rounded-md shadow-sm -space-y-px">
             <div>

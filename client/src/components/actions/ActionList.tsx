@@ -18,7 +18,11 @@ const ActionList: React.FC = () => {
     try {
       const data = await actionService.getAllActions(page);
       setActions((prev) => (page === 1 ? data.actions : [...prev, ...data.actions]));
-      setHasMore(data.pagination.hasMore);
+      if (data.pagination.hasMore === undefined) {
+        setHasMore(false);
+      } else {
+        setHasMore(data.pagination.hasMore);
+      }
     } catch (error) {
       console.error('Error loading actions:', error);
     } finally {

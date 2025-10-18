@@ -50,6 +50,7 @@ const Chatbot: React.FC = () => {
         content: 'Sorry, I\'m having trouble right now. Please try again later.',
         timestamp: new Date(),
       };
+      console.error('AI chat error:', error);
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setLoading(false);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { tipService } from '../../services/tipService';
 import Button from '../common/Button';
-
+import Toast from '../common/Toast';
 interface TipFormProps {
   onSuccess: () => void;
   onCancel?: () => void;
@@ -15,7 +15,12 @@ const TipForm: React.FC<TipFormProps> = ({ onSuccess, onCancel }) => {
     tags: '',
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [toast, setToast] = useState('');
+  const [status, setStatus] = useState<"success" | "error" | "info" | "warning" >("info");
+
+  const onClose = () => {
+    setToast('');
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -28,7 +33,7 @@ const TipForm: React.FC<TipFormProps> = ({ onSuccess, onCancel }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setToast('');
     setLoading(true);
 
     try {
@@ -45,14 +50,22 @@ const TipForm: React.FC<TipFormProps> = ({ onSuccess, onCancel }) => {
       });
 
       onSuccess();
+      setToast('Tip shared successfully!');
+      setStatus("success");
+      // Reset form
       setFormData({
         title: '',
         content: '',
         category: 'composting',
         tags: '',
       });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create tip. Please try again.');
+    } catch (err: unknown) {
+      setStatus("error");
+      if (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) {
+        // const response = (err as any).response;
+        setStatus("error");
+        setToast((err as { response: { data: { message: string } } }).response.data.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -62,10 +75,8 @@ const TipForm: React.FC<TipFormProps> = ({ onSuccess, onCancel }) => {
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Share a Tip</h2>
 
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
+      {toast && (
+        <Toast message={toast} onClose={onClose} type={status} />
       )}
 
       <div className="space-y-4">

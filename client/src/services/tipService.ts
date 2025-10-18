@@ -1,6 +1,6 @@
 import api from './api';
 import type { Tip } from '../types';
-
+import type {GetAllTipsSuccess} from '../types';
 export const tipService = {
   // Create tip
   createTip: async (data: {
@@ -14,7 +14,7 @@ export const tipService = {
   },
 
   // Get all tips
-  getAllTips: async (page: number = 1, category?: string): Promise<any> => {
+  getAllTips: async (page: number = 1, category?: string): Promise<GetAllTipsSuccess> => {
     const url = category ? `/tips?page=${page}&category=${category}` : `/tips?page=${page}`;
     const response = await api.get(url);
     return response.data;
@@ -27,13 +27,13 @@ export const tipService = {
   },
 
   // Like tip
-  likeTip: async (id: string): Promise<any> => {
+  likeTip: async (id: string): Promise<unknown> => {
     const response = await api.post(`/tips/${id}/like`);
     return response.data;
   },
 
   // Add comment
-  addComment: async (id: string, text: string): Promise<any> => {
+  addComment: async (id: string, text: string): Promise<unknown> => {
     const response = await api.post(`/tips/${id}/comment`, { text });
     return response.data;
   },

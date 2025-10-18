@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import Button from '../components/common/Button';
-
+import Toast from '../components/common/Toast';
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -11,7 +11,8 @@ const Register: React.FC = () => {
     location: '',
     climateZone: 'tropical',
   });
-  const [error, setError] = useState('');
+  const [status, setStatus] = useState<"success" | "error" | "info" | "warning" >("info");
+  const [toast, setToast] = useState("")
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -22,20 +23,28 @@ const Register: React.FC = () => {
       [e.target.name]: e.target.value,
     });
   };
-
+const onClose = () => {
+    setToast("");
+  }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setToast("");
     setLoading(true);
 
     try {
       await register(formData);
-      navigate('/dashboard');
+      setToast("Registration successful!");
+      setStatus("success");
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 3000);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setError(error.message);
+        setToast(error.message);
+        setStatus("error");
       } else {
-        setError(String(error));
+        setToast('Registration failed. Please try again.');
+        setStatus("error");
       }
     } finally {
       setLoading(false);
@@ -57,10 +66,8 @@ const Register: React.FC = () => {
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
+          {toast && (
+            <Toast message={toast} onClose={onClose} type={status} />
           )}
           <div className="space-y-4">
             <div>

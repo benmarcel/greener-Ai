@@ -1,5 +1,6 @@
+import type { Action, IGetAllActionsSuccess } from '../types';
+import type { AxiosResponse } from 'axios';
 import api from './api';
-import type { Action } from '../types';
 
 export const actionService = {
   // Create action
@@ -9,20 +10,21 @@ export const actionService = {
     description: string;
     imageUrl?: string;
   }): Promise<Action> => {
-    const response = await api.post('/actions', data);
+    const response: AxiosResponse<Action> = await api.post('/actions', data);
     return response.data;
   },
 
   // Get all actions
-  getAllActions: async (page: number = 1): Promise<any> => {
-    const response = await api.get(`/actions?page=${page}`);
+  getAllActions: async (page: number = 1): Promise<IGetAllActionsSuccess> => {
+    const response: AxiosResponse<IGetAllActionsSuccess> =
+      await api.get('/actions', { params: { page } });
     return response.data;
   },
 
   // Get user actions
   getUserActions: async (userId: string): Promise<Action[]> => {
-    const response = await api.get<{ actions: Action[] }>(`/actions/user/${userId}`);
-    return response.data.actions;
+    const response: AxiosResponse<Action[]> = await api.get(`/users/${userId}/actions`);
+    return response.data;
   },
 
   // Delete action

@@ -21,8 +21,11 @@ const TipCard: React.FC<TipCardProps> = ({ tip, onUpdate }) => {
   const handleLike = async () => {
     try {
       const response = await tipService.likeTip(tip._id);
+      if (typeof response === 'object' && response !== null && 'isLiked' in response && 'likes' in response && typeof response.isLiked === 'boolean' && typeof response.likes === 'number') {
+    
       setIsLiked(response.isLiked);
       setLikes(response.likes);
+    }
     } catch (error) {
       console.error('Error liking tip:', error);
     }

@@ -23,6 +23,7 @@ const TipList: React.FC<TipListProps> = ({ category, refreshKey }) => {
   const loadTips = async (pageNum: number = page) => {
     try {
       const data = await tipService.getAllTips(pageNum, category);
+      
       setTips((prev) => (pageNum === 1 ? data.tips : [...prev, ...data.tips]));
       setHasMore(pageNum < data.pagination.totalPages);
     } catch (error) {
