@@ -45,6 +45,12 @@ const Navbar: React.FC = () => {
                       Community
                     </NavLink>
                     <NavLink
+                      to="/marketplace"
+                      className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      Marketplace
+                    </NavLink>
+                    <NavLink
                       to="/actions"
                       className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
                     >

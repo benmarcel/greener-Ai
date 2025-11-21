@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import Community from './pages/Community';
 import AIChatPage from './pages/AiChatPage';
 import ActionsPage from './pages/ActionPages';
+import MarketPlace from './pages/MarketPlace';
 
 
 // Protected Route Component
@@ -70,6 +71,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <ActionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/marketplace"
+            element={
+              <ProtectedRoute>
+                <MarketPlace />
               </ProtectedRoute>
             }
           />
